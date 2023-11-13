@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>projeto banco</title>
+  <h1>Projeto Banco com Paradigma de programação orientado a objetos</h1>
+</head>
+<body>
+  <pre><code>
+    public abstract class Conta {
+      protected double saldo;
+  
+      public Conta(double saldo) {
+          this.saldo = saldo;
+      }
+  
+      public abstract void sacar(double valor);
+  }
+  
+  public class ContaCorrente extends Conta {
+    public ContaCorrente(double saldo) {
+        super(saldo);
+    }
+
+    @Override
+    public void sacar(double valor) {
+        // Implementação do saque para conta corrente
+    }
+}
+
+public class BancoMain {
+  public static void main(String[] args) {
+      Conta contaCorrente = new ContaCorrente(1000.0);
+      Conta contaSalario = new ContaSalario(500.0);
+      Conta contaPoupanca = new ContaPoupanca(2000.0);
+      Conta contaInvestimento = new ContaInvestimento(10000.0);
+
+      // Implementação de operações bancárias
+  }
+}
+public aspect VerificadorSaldoAspect {
+  pointcut verificarSaldo(Conta conta, double valor) :
+      execution(* Conta.sacar(double)) && target(conta) && args(valor);
+
+  before(Conta conta, double valor) : verificarSaldo(conta, valor) {
+      if (conta.getSaldo() < valor) {
+          System.out.println("Saldo insuficiente na conta: " + conta.getClass().getSimpleName());
+      }
+  }
+}
+<aspectj>
+  <aspects>
+      <aspect name="VerificadorSaldoAspect"/>
+  </aspects>
+</aspectj>
+
+<project name="projeto-banco" default="compile" basedir=".">
+  <property name="src.dir" location="src"/>
+  <property name="lib.dir" location="lib"/>
+
+  <path id="classpath">
+      <fileset dir="${lib.dir}" includes="*.jar"/>
+      <pathelement path="${src.dir}/main"/>
+  </path>
+
+  <target name="compile">
+      <mkdir dir="bin"/>
+      <javac srcdir="${src.dir}/main" destdir="bin" classpathref="classpath"/>
+      <javac srcdir="${src.dir}/aspect" destdir="bin" classpathref="classpath"/>
+  </target>
+</project>
+
+  ant compile
+
+  java -classpath bin BancoMain
+
+
+
+
+  </code></pre>
+  
+</body>
+</html>
